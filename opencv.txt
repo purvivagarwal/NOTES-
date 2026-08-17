@@ -1,0 +1,491 @@
+
+OpenCV — Basic Image & Video Operations
+
+## 1. Import OpenCV + Display an Image
+import cv2
+print("Package Imported")
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+cv2.imshow("Output", img)
+cv2.waitKey(0)
+
+### What each line does:
+* `import cv2` → Imports the **OpenCV library**.
+* `cv2.imread()` → **Reads an image** from the given path.
+* `r"..."` → Raw string. Useful for Windows paths because `\` is treated literally.
+* `"Output"` → **Window name** where the image will be displayed.
+* `cv2.imshow()` → Displays the image.
+* `cv2.waitKey(0)` → Waits indefinitely until a key is pressed.
+* `cv2.waitKey(1000)` → Waits for **1000 ms = 1 second**.
+
+# 2. Display a Video
+A video is basically a **sequence of images called frames**.
+Therefore, we repeatedly read and display frames using a `while` loop.
+```python.
+import cv2
+cap = cv2.VideoCapture(r"C:\Users\HP\Downloads\derm ai working.mp4")
+while True:
+    success, img = cap.read()
+    cv2.imshow("Output", img)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+### Important points:
+* `cv2.VideoCapture()` → Creates a **video capture object**.
+* `cap.read()` → Reads the **next frame**.
+* `success` → Tells whether the frame was successfully read.
+* `img` → Contains the current frame.
+* `while True` → Keeps reading frames continuously.
+* `cv2.waitKey(1)` → Waits approximately **1 ms** between frames.
+* `ord('q')` → Converts `q` into its ASCII value.
+* If the user presses `q`, the loop breaks.
+* `cap.release()` → Releases the video.
+* `cv2.destroyAllWindows()` → Closes OpenCV windows.
+
+# 3. Display Webcam
+
+import cv2
+cap = cv2.VideoCapture(0)
+cap.set(3, 640)   # Width
+cap.set(4, 480)   # Height
+while True:
+    success, img = cap.read()
+    cv2.imshow("Output", img)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+```
+
+### Camera numbers:
+cv2.VideoCapture(0)
+* `0` → Usually the **default/built-in webcam**
+* `1` → Usually an **external/second webcam**
+* `2` → Another connected camera, if available
+### `cap.set()`
+
+```python
+cap.set(3, 640)
+cap.set(4, 480)
+* `3` → Width
+* `4` → Height
+So:
+
+```text
+Width  = 640
+Height = 480
+
+# 4. Convert Image to Grayscale
+```python
+import cv2
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+cv2.imshow("Gray Image", imgGray)
+cv2.waitKey(0)
+### `cvtColor()`
+Syntax:
+
+```python
+cv2.cvtColor(image, conversion_type)
+```
+
+Here:
+```python
+cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+converts;
+BGR Image
+   ↓
+Grayscale Image
+```
+
+### Difference:
+**Before conversion:**
+Each pixel has 3 values:
+```text
+[B, G, R]
+Example:
+```text
+[120, 80, 200
+**After conversion:**
+Each pixel has only **one intensity value**:
+150
+```
+
+So grayscale contains shades from:
+
+```text
+0   → Black
+255 → White
+
+# 5. Blur an Image — Gaussian Blur
+
+```python
+import cv2
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+imgBlur = cv2.GaussianBlur(imgGray, (7, 7), 0)
+cv2.imshow("Gray Image", imgGray)
+cv2.imshow("Blur Image", imgBlur)
+cv2.waitKey(0)
+### Gaussian Blur
+
+```python
+cv2.GaussianBlur(image, (7, 7), 0)
+```
+
+* `(7,7)` → **Kernel size**
+* Larger kernel → generally **more blur**
+* `0` → Sigma is automatically calculated
+
+Example:
+
+```python
+(3,3)  → Less blur
+(7,7)  → More blur
+(15,15) → Even more blur
+```
+
+**In simple words:** Gaussian Blur smooths the image and removes small details/noise.
+
+---
+
+# 6. Canny Edge Detection
+
+```python
+import cv2
+
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+
+imgCanny = cv2.Canny(img, 150, 200)
+
+cv2.imshow("Canny Image", imgCanny)
+
+cv2.waitKey(0)
+```
+
+### What Canny does:
+
+It detects the **edges/boundaries** of objects in an image.
+
+Output looks approximately like:
+
+```text
+Black background
+      +
+White lines = detected edges
+```
+
+Syntax:
+
+```python
+cv2.Canny(image, threshold1, threshold2)
+```
+
+Example:
+
+```python
+cv2.Canny(img, 150, 200)
+```
+
+* `150` → Lower threshold
+* `200` → Upper threshold
+
+---
+
+# 7. Complete Image Processing Pipeline
+
+This combines the operations:
+
+```python
+import cv2
+
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+
+# Grayscale
+imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Blur
+imgBlur = cv2.GaussianBlur(imgGray, (7, 7), 0)
+
+# Edge Detection
+imgCanny = cv2.Canny(imgBlur, 150, 200)
+
+cv2.imshow("Original", img)
+cv2.imshow("Gray", imgGray)
+cv2.imshow("Blur", imgBlur)
+cv2.imshow("Canny", imgCanny)
+
+cv2.waitKey(0)
+```
+
+### Flow:
+
+```text
+Original Image
+      ↓
+   Grayscale
+      ↓
+     Blur
+      ↓
+Canny Edge Detection
+      ↓
+    Edges
+```
+
+---
+
+# 8. Dilation — Make Edges Thicker
+
+For dilation, first create a **kernel**.
+
+```python
+import cv2
+import numpy as np
+
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+
+imgCanny = cv2.Canny(img, 150, 200)
+
+kernel = np.ones((5, 5), np.uint8)
+
+imgDilation = cv2.dilate(
+    imgCanny,
+    kernel,
+    iterations=5
+)
+
+cv2.imshow("Canny", imgCanny)
+cv2.imshow("Dilation", imgDilation)
+
+cv2.waitKey(0)
+```
+
+### Kernel
+
+```python
+kernel = np.ones((5,5), np.uint8)
+```
+
+Creates a:
+
+```text
+5 × 5 matrix
+```
+
+of `1`s.
+
+### Dilation
+
+```python
+cv2.dilate(img, kernel, iterations=5)
+```
+
+Makes the detected edges **thicker**.
+
+```text
+Before dilation:
+
+   ───
+
+After dilation:
+
+  ═════
+```
+
+---
+
+# 9. Erosion — Make Edges Thinner
+
+Erosion is approximately the **opposite of dilation**.
+
+```python
+import cv2
+import numpy as np
+
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+
+imgCanny = cv2.Canny(img, 150, 200)
+
+kernel = np.ones((5, 5), np.uint8)
+
+imgDilation = cv2.dilate(
+    imgCanny,
+    kernel,
+    iterations=5
+)
+
+imgEroded = cv2.erode(
+    imgDilation,
+    kernel,
+    iterations=1
+)
+
+cv2.imshow("Canny", imgCanny)
+cv2.imshow("Dilation", imgDilation)
+cv2.imshow("Erosion", imgEroded)
+
+cv2.waitKey(0)
+```
+
+### Remember:
+
+```text
+Dilation → Makes objects/edges thicker
+Erosion  → Makes objects/edges thinner
+```
+
+---
+
+# 10. Resize an Image
+
+```python
+import cv2
+
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+
+imgResize = cv2.resize(img, (500, 300))
+
+cv2.imshow("Resized Image", imgResize)
+
+cv2.waitKey(0)
+```
+
+Syntax:
+
+```python
+cv2.resize(image, (width, height))
+```
+
+Example:
+
+```python
+cv2.resize(img, (500, 300))
+```
+
+means:
+
+```text
+Width  = 500
+Height = 300
+```
+
+⚠️ **Remember:** OpenCV uses:
+
+```text
+(width, height)
+```
+
+not `(height, width)` here.
+
+---
+
+# 11. Crop an Image
+
+```python
+import cv2
+
+img = cv2.imread(r"C:\Users\HP\Downloads\aurexlogo.png")
+
+imgCrop = img[y1:y2, x1:x2]
+
+cv2.imshow("Cropped Image", imgCrop)
+
+cv2.waitKey(0)
+```
+
+### Important:
+
+For NumPy image slicing:
+
+```python
+img[y1:y2, x1:x2]
+```
+
+The order is:
+
+```text
+[y coordinates, x coordinates]
+```
+
+So:
+
+```text
+y → Vertical position
+x → Horizontal position
+```
+
+---
+
+# ⭐ Quick Revision Cheat Sheet
+
+```text
+IMPORT
+cv2
+    ↓
+READ IMAGE
+cv2.imread()
+    ↓
+DISPLAY
+cv2.imshow()
+    ↓
+WAIT
+cv2.waitKey()
+```
+
+```text
+VIDEO
+cv2.VideoCapture()
+    ↓
+cap.read()
+    ↓
+cv2.imshow()
+    ↓
+cv2.waitKey()
+    ↓
+'q' → break
+```
+
+```text
+IMAGE PROCESSING
+
+BGR
+ ↓
+Grayscale
+cv2.cvtColor()
+ ↓
+Blur
+cv2.GaussianBlur()
+ ↓
+Edges
+cv2.Canny()
+ ↓
+Thicker edges
+cv2.dilate()
+ ↓
+Thinner edges
+cv2.erode()
+```
+
+```text
+RESIZE
+cv2.resize(img, (width, height))
+
+CROP
+img[y1:y2, x1:x2]
+
+WEBCAM
+cv2.VideoCapture(0)
+
+KERNEL
+np.ones((5,5), np.uint8)
+### One correction to your original notes
+
+This:
+
+```python
+cv2.Canny(img, 150, 20)
+is valid Python, but `20` is a **very low upper threshold** and may not give the result you expect. A common example is:
+
+```python
+cv2.Canny(img, 150, 200)
+Also, `waitKey(1)` doesn't specifically mean "check if the user typed something"; it waits for keyboard input for approximately 1 ms while allowing the OpenCV window to process events.
