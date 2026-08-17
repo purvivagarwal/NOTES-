@@ -1,0 +1,96 @@
+python Interview — Mistakes & Correct Answers
+Quick revision notes based on the questions you got wrong.
+1. List vs Tuple — Mutability
+a = [1, 2, 3]
+b = (1, 2, 3)
+a[0] = 10
+b[0] = 10
+print(a)
+print(b)
+Correct Answer:
+TypeError: 'tuple' object does not support item assignment
+The program crashes at b[0] = 10. The list is mutable, so a[0] = 10 works and would make a = [10, 2, 3].
+However, the tuple is immutable, so its elements cannot be reassigned. Because the program crashes
+before the print statements, neither print statement is executed.
+Remember: List → mutable → can be changed
+Tuple → immutable → cannot be changed
+2. Dictionary — .get()
+d = {"a": 10, "b": 20}
+print(d["a"])
+print(d.get("c"))
+print(d.get("c", 0))
+Correct Answer:
+10
+None
+0
+d["a"] directly accesses an existing key and returns 10. d.get("c") looks for a missing key and returns
+None. When a default value is supplied, d.get("c", 0) returns 0 instead.
+Remember: Python uses None, not null.
+get(missing) → None
+get(missing, default) → default
+3. range() + Even Numbers
+x = 0
+for i in range(1, 6):
+if i % 2 == 0:
+x += i
+print(x)
+Correct Answer:
+6
+range(1, 6) produces 1, 2, 3, 4, 5. The even numbers are 2 and 4, so the total is 2 + 4 = 6.
+Remember: range(start, stop) includes start but stops before stop.
+Round 2 — Mistakes
+4. Modifying a Loop Variable
+a = [1, 2, 3]
+for i in a:
+i = i * 2
+print(a)
+Correct Answer:
+[1, 2, 3]
+The variable i receives each value from the list, but changing i does not change the corresponding element
+inside a. The values of i temporarily become 2, 4 and 6, but the original list remains unchanged.
+Remember: for x in list: x = ... does not automatically modify the list.
+5. List Comprehension
+nums = [1, 2, 3, 4, 5, 6]
+result = [x * x for x in nums if x % 2 == 0]
+print(result)
+Correct Answer:
+[4, 16, 36]
+The comprehension selects every even number and squares it: 2 → 4, 4 → 16, and 6 → 36. Therefore the
+result is a list containing all three values.
+Remember: Pattern: [result for item in collection if condition]. A list comprehension normally produces
+a list, not a single value.
+6. Function Default Argument
+def add(a, b=10):
+return a + b
+print(add(5))
+print(add(5, 20))
+Correct Answer:
+15
+25
+In add(5), only a is supplied, so Python uses the default value b = 10. Therefore 5 + 10 = 15. In add(5, 20),
+the supplied value 20 replaces the default, giving 5 + 20 = 25.
+Remember: A default argument is used only when you do not provide that argument.
+7. Python String Slicing
+s = "PYTHON"
+print(s[0:3])
+print(s[-1])
+print(s[::-1])
+Correct Answer:
+PYT
+N
+NOHTYP
+Python slicing follows start included, end excluded. The indexes of PYTHON are 0=P, 1=Y, 2=T, 3=H,
+4=O, 5=N. Therefore s[0:3] takes indexes 0, 1 and 2 → "PYT". s[-1] gives the last character → "N".
+s[::-1] reverses the string.
+Remember: s[start:end] means start ≤ index < end. The end index is never included.
+Rapid Revision
+Topic Rule to Remember
+List Mutable — elements can be changed
+Tuple Immutable — elements cannot be reassigned
+dict.get() Missing key → None; with default → default value
+range() Stop value is excluded
+Loop variable Changing the variable does not automatically change the list
+List comprehension Produces a list of results
+Default argument Used when the argument is not supplied
+String slicing start included, end 
+
